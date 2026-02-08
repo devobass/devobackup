@@ -12,4 +12,4 @@ exec 2>&1
 BACKUP_PATH="$DIR_NAME/nginx"
 mkdir -p $BACKUP_PATH
 
-cp -a "/etc/nginx/nginx.conf" "$BACKUP_PATH/"
+cp -a "$DVBK_CONF_NGINX_CONF_PATH" "$BACKUP_PATH/"
