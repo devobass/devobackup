@@ -21,7 +21,7 @@ fi
 set -e
 exec 2>&1
 
-mkdir -p $BACKUP_DIR/conduit
+mkdir -p $DIR_NAME/conduit
 
-cp -a "$DVBK_CONF_CONDUIT_PATH/conduit.toml" "$BACKUP_DIR/conduit/"
-cp -a "$DVBK_CONF_CONDUIT_VAR_PATH" "$BACKUP_DIR/conduit/"
+cp -a "$DVBK_CONF_CONDUIT_PATH/conduit.toml" "$DIR_NAME/conduit/"
+cp -a "$DVBK_CONF_CONDUIT_VAR_PATH" "$DIR_NAME/conduit/"

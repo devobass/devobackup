@@ -28,7 +28,7 @@ fi
 set -e
 exec 2>&1
 
-BACKUP_PATH="$BACKUP_DIR/minecraft"
+BACKUP_PATH="$DIR_NAME/minecraft"
 
 mkdir -p "$BACKUP_PATH"
 

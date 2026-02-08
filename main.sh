@@ -5,7 +5,7 @@ set -e # be safe
 exec 2>&1
 logger -t backup "Backup started"
 
-export BACKUP_DIR="$1"
+BACKUP_DIR="$1"
 if [ -z $BACKUP_DIR ]
 then
 	echo "No backup directory specified, defaults to '.'"
@@ -16,7 +16,7 @@ fi
 
 SCRIPT_DIR="$(pwd)/modules"
 DATE_FMT="$(date +%Y-%m-%d)"
-DIR_NAME="$BACKUP_DIR/backup_$DATE_FMT"
+export DIR_NAME="$BACKUP_DIR/backup_$DATE_FMT"
 
 mkdir -p "$DIR_NAME"
 
