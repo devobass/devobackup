@@ -9,7 +9,7 @@
 - Each module is responsible for backing up its own data
 - The main script then turns the backup into a `tar` archive, compress with `zstd`, then verify with `b3sum`.
 
-# How to use
+## How to use
 - Edit `config.sh` to match your system's config path.
 
 ```
