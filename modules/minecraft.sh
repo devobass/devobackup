@@ -6,24 +6,29 @@ then
 	exit 1
 fi
 
-set -e
+if [ -z "${DVBK_CONF_MC_PATH:-}" ]
+then
+	echo "DVBK_CONF_MC_PATH env not set, edit config.sh and try again."
+	exit 1
+fi
 
-exec 2>&1
 
-if command -v mcrcon > /dev/null
+if ! command -v mcrcon > /dev/null
 then
 	echo "MCRCON not found."
 	exit 1;
 fi
 
-if [ -z $MCRCON_PASS ]
+if [ -z "${MCRCON_PASS:-}" ]
 then
 	echo "MCRCON_PASS env not set, quitting."
 	exit 1
 fi
 
-BACKUP_PATH="$1/minecraft"
-MC_PATH="/var/www/minecraft"
+set -e
+exec 2>&1
+
+BACKUP_PATH="$BACKUP_DIR/minecraft"
 
 mkdir -p "$BACKUP_PATH"
 
@@ -36,9 +41,9 @@ trap cleanup EXIT
 mcrcon -p "$MCRCON_PASS" save-off
 mcrcon -p "$MCRCON_PASS" "save-all flush"
 
-cp -a "$MC_PATH/world" "$BACKUP_PATH/"
-cp -a "$MC_PATH/mods" "$BACKUP_PATH/"
-cp -a "$MC_PATH/EasyAuth" "$BACKUP_PATH/"
-cp -a "$MC_PATH/config" "$BACKUP_PATH/"
-cp -a "$MC_PATH/ops.json" "$BACKUP_PATH/"
-cp -a "$MC_PATH/server.properties" "$BACKUP_PATH/"
+cp -a "$DVBK_CONF_MC_PATH/world" "$BACKUP_PATH/"
+cp -a "$DVBK_CONF_MC_PATH/mods" "$BACKUP_PATH/"
+cp -a "$DVBK_CONF_MC_PATH/EasyAuth" "$BACKUP_PATH/"
+cp -a "$DVBK_CONF_MC_PATH/config" "$BACKUP_PATH/"
+cp -a "$DVBK_CONF_MC_PATH/ops.json" "$BACKUP_PATH/"
+cp -a "$DVBK_CONF_MC_PATH/server.properties" "$BACKUP_PATH/"

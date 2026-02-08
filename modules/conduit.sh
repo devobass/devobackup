@@ -6,12 +6,22 @@ then
 	exit 1
 fi
 
-set -e
+if [ -z "${DVBK_CONF_CONDUIT_PATH:-}" ]
+then
+	echo "DVBK_CONF_CONDUIT_PATH env not set, edit config.sh and try again."
+	exit 1
+fi
 
+if [ -z "${DVBK_CONF_CONDUIT_VAR_PATH:-}" ]
+then
+	echo "DVBK_CONF_CONDUIT_PATH env not set, edit config.sh and try again."
+	exit 1
+fi
+
+set -e
 exec 2>&1
 
-BACKUP_PATH="$1"
-mkdir -p $BACKUP_PATH/conduit
+mkdir -p $BACKUP_DIR/conduit
 
-cp -a "/etc/conduit/conduit.toml" "$BACKUP_PATH/conduit/"
-cp -a "/var/lib/conduit" "$BACKUP_PATH/conduit/"
+cp -a "$DVBK_CONF_CONDUIT_PATH/conduit.toml" "$BACKUP_DIR/conduit/"
+cp -a "$DVBK_CONF_CONDUIT_VAR_PATH" "$BACKUP_DIR/conduit/"

@@ -6,14 +6,15 @@ then
 	exit 1
 fi
 
-set -e
+if [ -z "${DVBK_CONF_NGINX_CONF_PATH:-}" ]
+	echo "DVBK_CONF_NGINX_CONF_PATH env not set, edit config.sh and try again."
+	exit 1
+then
 
+set -e
 exec 2>&1
 
-BACKUP_PATH="$1/nginx"
+BACKUP_PATH="$BACKUP_DIR/nginx"
 mkdir -p $BACKUP_PATH
 
-cp -a "/etc/nginx/nginx.conf"	"$BACKUP_PATH/"
-cp -a "/var/www/pages" "$BACKUP_PATH/"
-cp -a "/var/www/profile" "$BACKUP_PATH/"
-cp -a "/var/www/librespeed" "$BACKUP_PATH/"
+cp -a "/etc/nginx/nginx.conf" "$BACKUP_PATH/"
