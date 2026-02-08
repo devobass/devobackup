@@ -8,7 +8,7 @@ logger -t backup "Backup started"
 BACKUP_DIR="$1"
 if [ -z $BACKUP_DIR ]
 then
-	echo "No backup directory specified, defaults to '.'"
+	printf "No backup directory specified, defaults to '.'\n\n"
 	export BACKUP_DIR="."
 fi
 
@@ -21,11 +21,11 @@ export DIR_NAME="$BACKUP_DIR/backup_$DATE_FMT"
 mkdir -p "$DIR_NAME"
 
 find "$SCRIPT_DIR" -type f -perm -u=x | sort | while IFS= read -r module; do
-	module_fmt=$(echo $module | awk -F '/' '{print $NF}')
-	echo "Running module: $module_fmt"
+	module_fmt=$(printf $module | awk -F '/' '{print $NF}')
+	printf "Running module: $module_fmt\n"
 
 	if ! "$module" "$DIR_NAME"; then
-	echo "Module failed, skipping.\n" >&2
+	printf "Module failed, skipping.\n\n" >&2
 	fi
 done
 
@@ -42,4 +42,4 @@ then
 	exit 0
 fi
 
-echo "b3sum not found, skipping."
+printf "b3sum not found, skipping."

@@ -2,19 +2,19 @@
 
 if [ $(id -u) -ne 0 ]
 then
-	echo "Not running as root, quitting early."
+	printf "\tNot running as root, quitting early.\n"
 	exit 1
 fi
 
 if [ -z "${DVBK_CONF_CONDUIT_PATH:-}" ]
 then
-	echo "DVBK_CONF_CONDUIT_PATH env not set, edit config.sh and try again."
+	printf "\tDVBK_CONF_CONDUIT_PATH env not set, edit config.sh and try again.\n"
 	exit 1
 fi
 
 if [ -z "${DVBK_CONF_CONDUIT_VAR_PATH:-}" ]
 then
-	echo "DVBK_CONF_CONDUIT_PATH env not set, edit config.sh and try again."
+	printf "\tDVBK_CONF_CONDUIT_PATH env not set, edit config.sh and try again.\n"
 	exit 1
 fi
 

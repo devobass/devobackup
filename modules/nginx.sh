@@ -2,7 +2,7 @@
 
 if [ -z "${DVBK_CONF_NGINX_CONF_PATH:-}" ]
 then
-	echo "DVBK_CONF_NGINX_CONF_PATH env not set, edit config.sh and try again."
+	printf "\tDVBK_CONF_NGINX_CONF_PATH env not set, edit config.sh and try again.\n"
 	exit 1
 fi
 

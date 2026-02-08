@@ -4,11 +4,11 @@ set -e
 
 if [ -z "${DVBK_CONF_NGINX_CONF_PATH:-}" ]
 then
-	echo "DVBK_CONF_NGINX_CONF_PATH env not set, edit config.sh and try again."
+	printf "\tDVBK_CONF_NGINX_CONF_PATH env not set, edit config.sh and try again.\n"
 	exit 1
 fi
 
-echo "Warning, this module might not backup every site, or any at all."
+printf "\tWarning, this module might not backup every site, or any at all.\n"
 
 SITES="$(grep -R '^[[:space:]]*root[[:space:]]' "$DVBK_CONF_NGINX_CONF_PATH" 2>/dev/null | sed 's/.*root[[:space:]]\+\([^;]*\);.*/\1/' | grep '^/' | sort -u | tr '\n' ' ')"
 
@@ -17,6 +17,5 @@ mkdir -p $BACKUP_PATH
 
 for dir in $SITES
 do
-	echo $dir
 	cp -a "$dir" "$BACKUP_PATH"
 done

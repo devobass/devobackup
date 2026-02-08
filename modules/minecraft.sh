@@ -2,26 +2,26 @@
 
 if [ $(id -u) -ne 0 ]
 then
-	echo "Not running as root, quitting early."
+	printf "\tNot running as root, quitting early.\n"
 	exit 1
 fi
 
 if [ -z "${DVBK_CONF_MC_PATH:-}" ]
 then
-	echo "DVBK_CONF_MC_PATH env not set, edit config.sh and try again."
+	printf "\tDVBK_CONF_MC_PATH env not set, edit config.sh and try again.\n"
 	exit 1
 fi
 
 
 if ! command -v mcrcon > /dev/null
 then
-	echo "MCRCON not found."
+	printf "\tMCRCON not found.\n"
 	exit 1;
 fi
 
 if [ -z "${MCRCON_PASS:-}" ]
 then
-	echo "MCRCON_PASS env not set, quitting."
+	printf "\tMCRCON_PASS env not set, quitting.\n"
 	exit 1
 fi
 
@@ -33,7 +33,7 @@ BACKUP_PATH="$DIR_NAME/minecraft"
 mkdir -p "$BACKUP_PATH"
 
 cleanup() {
-	echo "Re-enabling world saves"
+	printf "\tRe-enabling world saves\n"
 	mcrcon -p "$MCRCON_PASS" save-on || true
 }
 trap cleanup EXIT
