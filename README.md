@@ -49,9 +49,8 @@ $ mkdir pipeline/40-encrypt
 ```
 printf '%s\n' "newfilename"
 ```
-:::info
-Make sure all your loggings are output to `stderr` as `stdout` is taken by `$ARTIFACT`. eg. `printf "Your log here.\n" >&2`
-:::
+> [!NOTE]
+> Make sure all your loggings are output to `stderr` as `stdout` is taken by `$ARTIFACT`. eg. `printf "Your log here.\n" >&2`
 - You can view the pre-existing modules to learn more.
 
 ## Note
