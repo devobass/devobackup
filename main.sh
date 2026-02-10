@@ -1,91 +1,45 @@
 #!/usr/bin/env sh
+
 set -e # be safe
 
-MODE="$1"
-export TARGET="$2"
+exec 2>&1
+logger -t backup "Backup started"
 
-if [ -z "$MODE" ]
+BACKUP_DIR="$1"
+if [ -z $BACKUP_DIR ]
 then
-	printf "Usage: main.sh backup /path/to/backup/\n"
-	printf "Usage: main.sh restore /path/to/archive/\n"
-	exit 1
-fi
-
-DATE_FMT="$(date +%Y-%m-%d)"
-
-if [ -z "$TARGET" ]
-then
-	printf "No directory set, defaulting to backup_$DATE_FMT.\n"
-	export TARGET="backup_$DATE_FMT"
+	printf "No backup directory specified, defaults to '.'\n\n"
+	export BACKUP_DIR="."
 fi
 
 . ./config.sh
 
 SCRIPT_DIR="$(pwd)/modules"
-PIPELINE_DIR="$(pwd)/pipeline"
+DATE_FMT="$(date +%Y-%m-%d)"
+export DIR_NAME="$BACKUP_DIR/backup_$DATE_FMT"
 
-export ARTIFACT="$TARGET"
+mkdir -p "$DIR_NAME"
 
-run_modules() {
-	printf '*** RUNNING MODULES ***\n'
+find "$SCRIPT_DIR" -type f -perm -u=x | sort | while IFS= read -r module; do
+	module_fmt=$(printf $module | awk -F '/' '{print $NF}')
+	printf "Running module: $module_fmt\n"
 
-	find "$SCRIPT_DIR" -type f -name "$MODE.sh" -perm -u=x |
-	while IFS= read -r module; do
-		module_fmt=$(basename "$(dirname "$module")")
-		printf "Running module: %s\n" "$module_fmt"
-
-		if ! "$module"; then
-			printf "Module failed, skipping.\n\n" >&2
-			continue
-		fi
-
-		printf "Module succeeded.\n\n"
-	done
-}
-
-run_pipeline() {
-	SORT_FLAG=""
-
-	if [ "$MODE" = "restore" ]; then
-		SORT_FLAG="--reverse"
-		export ARTIFACT="$TARGET"
+	if ! "$module" "$DIR_NAME"; then
+	printf "Module failed, skipping.\n\n" >&2
 	fi
+done
 
-	printf '*** RUNNING PIPELINE ***\n'
 
-	find "$PIPELINE_DIR" -type f -name "$MODE.sh" -perm -u=x |
-	sort $SORT_FLAG |
-	while IFS= read -r module; do
-		module_fmt=$(basename "$(dirname "$module")")
-		printf "Running module: %s\n" "$module_fmt"
+tar -cf "$DIR_NAME.tar" "$DIR_NAME"
+rm -r "$DIR_NAME"
 
-		new_artifact="$("$module")" || {
-			printf "Module failed, exiting.\n\n" >&2
-			exit 1
-		}
+zstd -T0 --compress --rm "$DIR_NAME.tar"
+zstd --test "$DIR_NAME.tar.zst"
 
-		export ARTIFACT="$new_artifact"
-	echo $ARTIFACT > /tmp/devobackup_temp
-		printf "Module succeeded.\n\n"
-	done
-}
+if command -v b3sum > /dev/null
+then
+	b3sum "$DIR_NAME.tar.zst" > "$DIR_NAME.tar.zst.b3sum"
+	exit 0
+fi
 
-case "$MODE" in
-	backup)
-		run_modules
-		run_pipeline
-		;;
-	restore)
-		run_pipeline
-	ARTIFACT=$(cat /tmp/devobackup_temp)
-		run_modules
-	rm -rf $ARTIFACT
-	rm -rf /tmp/devobackup_temp
-		;;
-	*)
-		printf "Unknown mode: %s\n" "$MODE" >&2
-		exit 1
-		;;
-esac
-
-printf "%s finished.\n" "$MODE"
+printf "b3sum not found, skipping."
