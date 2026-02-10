@@ -2,14 +2,14 @@
 
 if [ -z "${DVBK_CONF_NGINX_CONF_PATH:-}" ]
 then
-	printf "\tDVBK_CONF_NGINX_CONF_PATH env not set, edit config.sh and try again.\n"
+	printf "DVBK_CONF_NGINX_CONF_PATH env not set, edit config.sh and try again.\n"
 	exit 1
 fi
 
 set -e
 exec 2>&1
 
-BACKUP_PATH="$DIR_NAME/nginx"
+BACKUP_PATH="$TARGET/nginx"
 mkdir -p $BACKUP_PATH
 
 cp -a "$DVBK_CONF_NGINX_CONF_PATH" "$BACKUP_PATH/"
